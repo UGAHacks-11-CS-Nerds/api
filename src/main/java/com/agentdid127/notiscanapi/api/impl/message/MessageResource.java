@@ -61,7 +61,7 @@ public class MessageResource {
         for (Message m : messages) {
             out.append(m.toJson()).append(", ");
         };
-        if (messages.length > 1) out = new StringBuilder(out.substring(0, out.length() - 2));
+        if (messages.length > 0) out = new StringBuilder(out.substring(0, out.length() - 2));
         return out + "]";
     }
 }
