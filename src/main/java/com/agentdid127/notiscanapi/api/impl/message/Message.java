@@ -206,7 +206,7 @@ public class Message {
     }
 
     /**
-     * Grabs a message from a selectino
+     * Grabs a message from a selection
      * @param selection selection in database
      * @param idx index of selection
      * @return Message from index in selection.

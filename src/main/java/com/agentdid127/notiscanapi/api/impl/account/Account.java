@@ -25,7 +25,7 @@ public class Account {
     protected String hash;
 
     private static final String[] vars = new String[]{"id","username","email","salt","hash"};
-    private static final HashMap<String, Account> accounts = new HashMap<String, Account>();
+    //private static final HashMap<String, Account> accounts = new HashMap<String, Account>();
     /**
      * Default Constructor
      */
@@ -60,23 +60,9 @@ public class Account {
      * @param email email provided by user
      */
     public Account(String username, String email, String password) {
-        this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, createSalt(), "Unimplemented");
-        // accounts.put(username, this);
-    }
-
-    public static String createSalt() {
-        String alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-        StringBuilder salt = new StringBuilder();
-        for (int i = 0; i < 16; ++i) {
-            int randInt = (int) (Math.random() * 48);
-            salt.append(alphabet.charAt(randInt));
-        }
-        // Check its a unique Salt
-
-        return salt.toString();
-    }
-    public static boolean uniqueSalt(String salt) {
-
+        this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, AccountResource.createSalt(), null);
+        AccountResource.createHash(this, password);
+        insertAccount(); // Should just add to database!
     }
 
     /**
@@ -114,5 +100,8 @@ public class Account {
 
     public void setHash(String hash) {this.hash = hash;}
 
+    void insertAccount() {
+        NotiscanApiApplication.DATABASE.insert("account", vars, this.id, this.username, this.email, this.salt, this.hash);
+    }
 
 }

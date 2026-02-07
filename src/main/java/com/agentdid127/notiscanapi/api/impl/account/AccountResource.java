@@ -18,22 +18,19 @@ import java.util.HashMap;
 @Path("/account")
 public class AccountResource {
 
-    private static final HashMap<String, AccountResource> accounts = new HashMap<String, AccountResource>();
+    // private static final HashMap<String, AccountResource> accounts = new HashMap<String, AccountResource>();
 
     public static String createSalt() {
         String alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
         StringBuilder salt = new StringBuilder();
+
         for (int i = 0; i < 16; ++i) {
             int randInt = (int) (Math.random() * 48);
             salt.append(alphabet.charAt(randInt));
         }
-        // Check its a unique Salt by pulling from database
         return salt.toString();
     }
 
-//    public static boolean uniqueSalt(String salt) {
-//
-//    }
 
     /**
      * Retreives an account by id.
@@ -51,19 +48,13 @@ public class AccountResource {
         return NotiscanApiApplication.GSON.toJson(out);
     }
     /**
-     * Called during the setup and returns email, password, and username
+     * Sets up the hash using password
      *
-     * @param email
      * @param password
      */
-//    public static void createLogin(String password) {
-//        this.email = email;
-//        this.username = username;
-//        String intoHash = getSalt() + password;
-//        setHash(String.valueOf(intoHash.hashCode()));
-//    }
-//
-//    void insertAccount() {
-//    }
+    public static void createHash(Account account, String password) {
+        String intoHash = account.getSalt() + password;
+        account.setHash(String.valueOf(intoHash.hashCode()));
+    }
 
 }
