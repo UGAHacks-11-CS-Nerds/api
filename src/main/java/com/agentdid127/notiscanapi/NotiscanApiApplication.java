@@ -1,7 +1,9 @@
 package com.agentdid127.notiscanapi;
 
+import com.erliapp.utilities.Snowflake;
 import com.erliapp.utilities.database.Database;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 /**
  * Main Application
@@ -20,7 +23,9 @@ public class NotiscanApiApplication {
     public static Database DATABASE;
 
     // GSON for json
-    public static Gson GSON = new Gson();
+    public static Gson GSON = new GsonBuilder().create();
+
+    public static Snowflake SNOWFLAKE;
 
     /**
      * Main method
@@ -43,6 +48,9 @@ public class NotiscanApiApplication {
 
         // Set up database
         DATABASE = new DatabaseManager(configFile.toPath().toAbsolutePath().getParent().toString(), configFile.getName()).getDatabase();
+
+        // Create snowflakes (the number is the timestamp for 2/5/2026 at midnight UTC.
+        SNOWFLAKE = new Snowflake(1770267600000L);
 
         // Start API.
         SpringApplication.run(NotiscanApiApplication.class, args);
