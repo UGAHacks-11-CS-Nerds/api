@@ -67,8 +67,21 @@ public class DatabaseManager {
             //Type
             builder.setType("sqlite");
             // builder.addDatabaseValue("{table_name}, {key}, {type}"
-            builder.addDatabaseValue("account", "username", "TEXT");
 
+            // Accounts
+            builder.addDatabaseValue("account", "id", "BIGINT");
+            builder.addDatabaseValue("account", "username", "TEXT");
+            builder.addDatabaseValue("account", "email", "TEXT");
+            builder.addDatabaseValue("account", "salt", "TEXT");
+            builder.addDatabaseValue("account", "hash", "TEXT");
+
+            // Messages
+            builder.addDatabaseValue("messages", "id", "BIGINT");
+            builder.addDatabaseValue("messages", "owner", "BIGINT");
+            builder.addDatabaseValue("messages", "date", "BIGINT");
+            builder.addDatabaseValue("messages", "msg", "TEXT");
+            builder.addDatabaseValue("messages", "session", "BIGINT");
+            builder.addDatabaseValue("messages", "is_owner", "BIGINT");
 
             builder.setUseSSL(false);
 
