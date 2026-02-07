@@ -12,12 +12,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Main Application
  */
 @SpringBootApplication
 public class NotiscanApiApplication {
+
+    public static Map<Long,Long> sessions = new LinkedHashMap<>();
 
     // Database connection
     public static Database DATABASE;
