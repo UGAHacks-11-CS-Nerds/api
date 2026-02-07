@@ -1,0 +1,4 @@
+database:
+  contact: ./database.db
+  port: 8000
+  database: database
