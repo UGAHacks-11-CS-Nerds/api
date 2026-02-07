@@ -3,10 +3,7 @@ package com.agentdid127.notiscanapi.api.impl.account;
 import com.agentdid127.notiscanapi.NotiscanApiApplication;
 import com.erliapp.utilities.database.DatabaseSelection;
 import com.google.gson.JsonObject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -37,8 +34,22 @@ public class AccountResource {
     }
 
 
+    @POST
+    @Produces("application/json")
+    @Path("/")
+    public String createAccount(String body) {
+        JsonObject bodyObject = NotiscanApiApplication.GSON.fromJson(body, JsonObject.class);
+        Account account =  new Account(bodyObject.get("username").getAsString(), bodyObject.get("email").getAsString(), bodyObject.get("password").getAsString());
+        try {
+            Account.findUserByEmail(account.getEmail());
+            return "{\"success\": \"false\"}";
+        } catch(IllegalArgumentException e) {
+            account.insertAccount();
+            return "{\"success\": \"true\"}";
+        }
+    }
     /**
-     * Retreives an account by id.
+     * Return username and email
      *
      * @param id ID of user to retreive
      * @return The user account.
@@ -49,12 +60,31 @@ public class AccountResource {
     @Path("/{id}")
     public String GetAccount(@PathParam("id") String id) throws IOException {
         JsonObject out = new JsonObject();
-        out.addProperty("id", id);
-        return NotiscanApiApplication.GSON.toJson(out);
+        try {
+            Account account = Account.findUserByID(Long.parseLong(id));
+            out.addProperty("username", account.getUsername());
+            out.addProperty("email", account.getEmail());
+            return NotiscanApiApplication.GSON.toJson(out);
+        } catch (Exception e) {
+            System.err.println("Could not find account with id " + id);
+            return "{\"username\": \"none\", \"email\": \"none\"}";
+        }
     }
-//    public Account GetAccount(String id) {
-//        JsonObject out =
-//    }
+    /**
+     * Login using email and password
+     *
+     * @param body Entered the email and password to login
+     */
+    @POST
+    @Produces("application/json")
+    @Path("/")
+    public String loginAccount(String body) {
+        JsonObject bodyObject = NotiscanApiApplication.GSON.fromJson(body, JsonObject.class);
+        String email = bodyObject.get("email").getAsString();
+        Account account = Account.findUserByEmail(email);
+        String password = bodyObject.get("password").getAsString();
+        return authenticate(account, password);
+    }
 
     /**
      * Sets up the hash using password
