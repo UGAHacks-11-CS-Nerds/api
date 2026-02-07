@@ -108,6 +108,13 @@ public class Account {
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
     }
+
+    public static Account findUserByName(String username) {
+        DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "username = \"" + username + "\" LIMIT 1");
+        if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
+        return fromSelection(selection, 0);
+    }
+
     private static Account fromSelection(DatabaseSelection selection, int idx) {
         long id_out = selection.getRow(idx).get("id").getLong();
         String username_out = selection.getRow(idx).get("username").getString();
