@@ -1,7 +1,7 @@
 package com.agentdid127.notiscanapi.api.impl.account;
 
 import com.agentdid127.notiscanapi.NotiscanApiApplication;
-import com.agentdid127.notiscanapi.api.impl.message.Message;
+import com.agentdid127.notiscanapi.Util;
 import com.erliapp.utilities.database.DatabaseSelection;
 import com.google.gson.JsonObject;
 import jakarta.ws.rs.GET;
@@ -14,18 +14,25 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.IOException;
 
+/**
+ *  Base Account
+ */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "accountv1")
 @Path("/account")
 public class Account {
 
+
+    // Data
     protected long id;
     protected String username;
     protected String email;
     protected String salt;
     protected String hash;
 
+    // Variables to grab from database
     private static final String[] vars = new String[]{"id","username","email","salt","hash"};
+
     /**
      * Default Constructor
      */
@@ -60,8 +67,8 @@ public class Account {
      * @param email email provided by user
      */
     public Account(String username, String email, String password) {
-        this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, AccountResource.createSalt(), null);
-        AccountResource.createHash(this, password);
+        this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, Util.createSalt(), null);
+        Util.createHash(this, password);
     }
 
     /**
@@ -79,47 +86,112 @@ public class Account {
         return NotiscanApiApplication.GSON.toJson(out);
     }
 
+    /**
+     * Gets the user id
+     * @return the user i
+     */
     public long getId() {return id;}
 
+    /**
+     * Gets the username
+     * @return username
+     */
     public String getUsername() {return username;}
 
+    /**
+     * Gets the email
+     * @return email
+     */
     public String getEmail() {return email;}
 
+    /**
+     * Gets the salt
+     * @return salt
+     */
     public String getSalt() {return salt;}
 
+    /**
+     * Gets the hash
+     * @return hash
+     */
     public String getHash() {return hash;}
 
+    /**
+     * Sets the user id
+     * @param id user id
+     */
     public void setId(long id) {this.id = id;}
 
+    /**
+     * Sets the username.
+     * @param username username.
+     */
     public void setUsername(String username) {this.username = username;}
 
+    /**
+     * Sets the email
+     * @param email email.
+     */
     public void setEmail(String email) {this.email = email;}
 
+    /**
+     * Sets the salt
+     * @param salt salt.
+     */
     public void setSalt(String salt) {this.salt = salt;}
 
+    /**
+     * Sets teh hash
+     * @param hash hash
+     */
     public void setHash(String hash) {this.hash = hash;}
 
+    /**
+     * Inserts an account into the database.
+     */
     public void insertAccount() {
         NotiscanApiApplication.DATABASE.insert("account", vars, this.id, this.username, this.email, this.salt, this.hash);
     }
 
+    /**
+     * Gets a User account from an id
+     * @param id id to search
+     * @return The user Account
+     */
     public static Account findUserByID(long id) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "id = " + id + " LIMIT 1");
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
     }
 
+    /**
+     * Gets a user account by name
+     * @param username Username
+     * @return User account
+     */
     public static Account findUserByName(String username) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "username = \"" + username + "\" LIMIT 1");
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
     }
+
+    /**
+     * Gets a user account by email
+     * @param email Email
+     * @return User Account
+     */
     public static Account findUserByEmail(String email) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "email = \"" + email + "\" LIMIT 1");
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
     }
 
+    /**
+     * Gets an account from a selection
+     * @param selection DatabaseSelection
+     * @param idx Index in selection
+     * @return Account
+     */
     private static Account fromSelection(DatabaseSelection selection, int idx) {
         long id_out = selection.getRow(idx).get("id").getLong();
         String username_out = selection.getRow(idx).get("username").getString();
