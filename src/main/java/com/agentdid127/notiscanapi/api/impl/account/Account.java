@@ -61,7 +61,6 @@ public class Account {
      */
     public Account(String username, String email, String password) {
         this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, createSalt(), "Unimplemented");
-        createLogin(password);
         // accounts.put(username, this);
     }
 
@@ -115,19 +114,5 @@ public class Account {
 
     public void setHash(String hash) {this.hash = hash;}
 
-    /**
-     * Called during the setup and returns email, password, and username
-     * @param email
-     * @param password
-     */
-    public void createLogin(String password) {
-        this.email = email;
-        this.username = username;
-        String intoHash = getSalt() + password;
-        setHash(String.valueOf(intoHash.hashCode()));
-    }
-
-    void insertAccount() {
-    }
 
 }
