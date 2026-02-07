@@ -45,6 +45,12 @@ public class MessageResource {
         return msg.toJson();
     }
 
+    /**
+     * Gets all messages in a session
+     * @param session Session id
+     * @return Message array in session
+     * @throws IOException if something with the database screws up.
+     */
     @GET
     @Produces("application/json")
     @Path("/session/{session}")
