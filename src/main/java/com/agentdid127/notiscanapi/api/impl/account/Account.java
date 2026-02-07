@@ -1,6 +1,8 @@
 package com.agentdid127.notiscanapi.api.impl.account;
 
 import com.agentdid127.notiscanapi.NotiscanApiApplication;
+import com.agentdid127.notiscanapi.api.impl.message.Message;
+import com.erliapp.utilities.database.DatabaseSelection;
 import com.google.gson.JsonObject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -11,7 +13,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "accountv1")
@@ -25,7 +26,6 @@ public class Account {
     protected String hash;
 
     private static final String[] vars = new String[]{"id","username","email","salt","hash"};
-    //private static final HashMap<String, Account> accounts = new HashMap<String, Account>();
     /**
      * Default Constructor
      */
@@ -62,7 +62,6 @@ public class Account {
     public Account(String username, String email, String password) {
         this(NotiscanApiApplication.SNOWFLAKE.nextId(), username, email, AccountResource.createSalt(), null);
         AccountResource.createHash(this, password);
-        insertAccount(); // Should just add to database!
     }
 
     /**
@@ -100,8 +99,21 @@ public class Account {
 
     public void setHash(String hash) {this.hash = hash;}
 
-    void insertAccount() {
+    public void insertAccount() {
         NotiscanApiApplication.DATABASE.insert("account", vars, this.id, this.username, this.email, this.salt, this.hash);
     }
 
+    public static Account findUser(long id) {
+        DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "id = " + id + " LIMIT 1");
+        if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
+        return fromSelection(selection, 0);
+    }
+    private static Account fromSelection(DatabaseSelection selection, int idx) {
+        long id_out = selection.getRow(idx).get("id").getLong();
+        String username_out = selection.getRow(idx).get("username").getString();
+        String email_out = selection.getRow(idx).get("email").getString();
+        String salt_out = selection.getRow(idx).get("salt").getString();
+        String hash_out = selection.getRow(idx).get("hash").getString();
+        return new Account(id_out, username_out, email_out, salt_out, hash_out);
+    }
 }
