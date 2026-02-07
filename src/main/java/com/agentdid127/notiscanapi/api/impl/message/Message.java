@@ -15,7 +15,7 @@ public class Message {
     protected long session;
     protected long is_owner;
 
-    private static String[] vars = new String[]{"id", "owner", "date", "msg", "session", "is_owner"}
+    private static final String[] vars = new String[]{"id", "owner", "date", "msg", "session", "is_owner"};
 
     /**
      * Default Constructor
