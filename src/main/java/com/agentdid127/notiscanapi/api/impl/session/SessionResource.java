@@ -18,7 +18,7 @@ import java.io.IOException;
 public class SessionResource {
 
     /**
-     * Retreives an account by id.
+     * Generates a session id tied to an owner.
      * @param owner of session
      * @return The user account.
      * @throws IOException If an error occured with the database.
