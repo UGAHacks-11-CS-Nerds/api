@@ -44,4 +44,18 @@ public class MessageResource {
         msg.insertMessage();
         return msg.toJson();
     }
+
+    @GET
+    @Produces("application/json")
+    @Path("/session/{session}")
+    public String getMessageFromSession(@PathParam("session") long session) throws IOException {
+        Message[] messages = Message.loadMessagesBySession(session);
+
+        StringBuilder out = new StringBuilder("[");
+        for (Message m : messages) {
+            out.append(m.toJson()).append(", ");
+        };
+        out = new StringBuilder(out.substring(0, out.length() - 2));
+        return out + "]";
+    }
 }
