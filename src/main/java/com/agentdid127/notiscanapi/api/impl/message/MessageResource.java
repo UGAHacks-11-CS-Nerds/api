@@ -27,8 +27,6 @@ public class MessageResource {
     @Produces("application/json")
     @Path("/{id}")
     public String GetMessage(@PathParam("id") String id) throws IOException {
-        JsonObject out = new JsonObject();
-        out.addProperty("id", id);
-        return NotiscanApiApplication.GSON.toJson(out);
+        return Message.loadMessageById(Long.parseLong(id)).toJson();
     }
 }
