@@ -196,7 +196,7 @@ public class Message {
      * @return array of all messages in session
      */
     public static Message[] loadMessagesBySession(long session) {
-        DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "messages", "session = " + session + " LIMIT 1");
+        DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "messages", "session = " + session + " LIMIT 100000");
 
         ArrayList<Message> messages = new ArrayList<>();
         for (int i = 0; i < selection.size(); i++) {
