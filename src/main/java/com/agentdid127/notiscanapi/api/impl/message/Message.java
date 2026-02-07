@@ -197,9 +197,6 @@ public class Message {
      */
     public static Message[] loadMessagesBySession(long session) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "messages", "session = " + session + " LIMIT 1");
-        if (selection.size() == 0) {
-            throw new IllegalStateException("Message does not exist!");
-        }
 
         ArrayList<Message> messages = new ArrayList<>();
         for (int i = 0; i < selection.size(); i++) {
