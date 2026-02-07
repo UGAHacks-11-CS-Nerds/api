@@ -103,7 +103,7 @@ public class Account {
         NotiscanApiApplication.DATABASE.insert("account", vars, this.id, this.username, this.email, this.salt, this.hash);
     }
 
-    public static Account findUser(long id) {
+    public static Account findUserByID(long id) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "id = " + id + " LIMIT 1");
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
@@ -111,6 +111,11 @@ public class Account {
 
     public static Account findUserByName(String username) {
         DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "username = \"" + username + "\" LIMIT 1");
+        if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
+        return fromSelection(selection, 0);
+    }
+    public static Account findUserByEmail(String email) {
+        DatabaseSelection selection = NotiscanApiApplication.DATABASE.select(vars, "account", "email = \"" + email + "\" LIMIT 1");
         if (selection.size() == 0) throw new IllegalStateException("User Account does not exist");
         return fromSelection(selection, 0);
     }
