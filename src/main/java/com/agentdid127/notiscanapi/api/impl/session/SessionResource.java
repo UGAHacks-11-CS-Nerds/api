@@ -44,7 +44,7 @@ public class SessionResource {
     @Path("/all/{owner}")
     public String getOwnerSessions(@PathParam("owner") long owner) throws IOException {
        Database database = NotiscanApiApplication.DATABASE;
-       DatabaseSelection sel = database.select(new String[]{"session", "id"}, "message", "owner = " + owner);
+       DatabaseSelection sel = database.select(new String[]{"session", "id"}, "messages", "owner = " + owner);
         JsonArray sessions = new JsonArray();
        for (int i = 0; i < sel.size(); i++) {
            boolean found = false;
